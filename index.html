@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Reservation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <h2 class="logo">✈️ FlightBook</h2>
+      <div class="nav-buttons" id="navButtons">
+        <button class="nav-button" onclick="showAuthModal('login')">Login</button>
+        <button class="nav-button" onclick="showAuthModal('signup')">Sign Up</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>Wherever You Dream, Kedze Delphine Takes You There</h1>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-button active" onclick="showTab('search')">Search Flights</button>
+      <button class="tab-button" onclick="showTab('today')">Today's Flights</button>
+      <button class="tab-button admin-only hidden" onclick="showTab('add')">Add Flight</button>
+      <button class="tab-button customer-only hidden" onclick="showTab('bookings')">My Bookings</button>
+    </div>
+
+    <div id="searchTab" class="tab-content active">
+      <form id="searchForm" class="search-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fromCity">From</label>
+            <div class="input-icon">
+              <i class="icon">✈️</i>
+              <input type="text" id="fromCity" placeholder="Departure City" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="toCity">To</label>
+            <div class="input-icon">
+              <i class="icon">🛬</i>
+              <input type="text" id="toCity" placeholder="Arrival City" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="date">Date</label>
+            <div class="input-icon">
+              <i class="icon">📅</i>
+              <input type="date" id="date" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="passengers">Passengers</label>
+            <div class="input-icon">
+              <i class="icon">👥</i>
+              <select id="passengers">
+                <option value="1">1 Passenger</option>
+                <option value="2">2 Passengers</option>
+                <option value="3">3 Passengers</option>
+                <option value="4">4 Passengers</option>
+                <option value="5">5 Passengers</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="search-button">
+          🔍 Search Flights
+        </button>
+      </form>
+
+      <div id="searchResults" class="search-results"></div>
+    </div>
+
+    <div id="todayTab" class="tab-content">
+      <h2>Today's Flights</h2>
+      <div id="todayFlights" class="flight-grid"></div>
+    </div>
+
+    <div id="addTab" class="tab-content">
+      <h2>Add New Flight</h2>
+      <form id="addFlightForm" class="add-flight-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="addFromCity">From</label>
+            <input type="text" id="addFromCity" required>
+          </div>
+          <div class="form-group">
+            <label for="addToCity">To</label>
+            <input type="text" id="addToCity" required>
+          </div>
+          <div class="form-group">
+            <label for="addDate">Date</label>
+            <input type="date" id="addDate" required>
+          </div>
+          <div class="form-group">
+            <label for="addTime">Time</label>
+            <input type="time" id="addTime" required>
+          </div>
+          <div class="form-group">
+            <label for="addAirline">Airline</label>
+            <input type="text" id="addAirline" required>
+          </div>
+          <div class="form-group">
+            <label for="addPrice">Price (FCFA)</label>
+            <input type="number" id="addPrice" required>
+          </div>
+          <div class="form-group">
+            <label for="addDuration">Duration</label>
+            <input type="text" id="addDuration" placeholder="2h 30m" required>
+          </div>
+        </div>
+        <button type="submit" class="search-button">Add Flight</button>
+      </form>
+    </div>
+
+    <div id="bookingsTab" class="tab-content">
+      <h2>My Bookings</h2>
+      <div id="bookingsList" class="bookings-list"></div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeAuthModal()">&times;</span>
+      <div id="loginForm" class="auth-form">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+      </div>
+      <div id="signupForm" class="auth-form">
+        <h2>Sign Up</h2>
+        <input type="text" id="signupName" placeholder="Full Names" required>
+        <input type="email" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required>
+        <button onclick="signup()">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Modal -->
+  <div id="ticketModal" class="modal">
+    <div class="modal-content ticket">
+      <span class="close" onclick="closeTicketModal()">&times;</span>
+      <div id="ticketContent"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
