@@ -91,6 +91,23 @@ function signup() {
   closeAuthModal();
 }
 
+// function login(email = null, password = null) {
+//   email = email || document.getElementById('loginEmail').value;
+//   password = password || document.getElementById('loginPassword').value;
+
+//   const user = users.find(u => u.email === email && u.password === password);
+//   if (user) {
+//     currentUser = user;
+//     updateNavigation();
+//     closeAuthModal();
+//     // Refresh displays after login
+//     displayTodayFlights();
+//     displaySearchResults(flights);
+//   } else {
+//     alert('Invalid credentials!');
+//   }
+// }
+
 function login(email = null, password = null) {
   email = email || document.getElementById('loginEmail').value;
   password = password || document.getElementById('loginPassword').value;
@@ -98,9 +115,9 @@ function login(email = null, password = null) {
   const user = users.find(u => u.email === email && u.password === password);
   if (user) {
     currentUser = user;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Save to localStorage
     updateNavigation();
     closeAuthModal();
-    // Refresh displays after login
     displayTodayFlights();
     displaySearchResults(flights);
   } else {
@@ -108,10 +125,13 @@ function login(email = null, password = null) {
   }
 }
 
+
 function logout() {
   currentUser = null;
+  localStorage.removeItem('currentUser'); // Remove from localStorage
   updateNavigation();
 }
+
 function updateNavigation() {
   const navButtons = document.getElementById('navButtons');
   const adminTab = document.querySelector('.admin-only');
@@ -119,10 +139,40 @@ function updateNavigation() {
   
 
   if (currentUser) {
+    // navButtons.innerHTML = `
+    // <span>Welcome, ${currentUser.isAdmin ? 'Admin' : 'Customer'} - ${currentUser.name}</span>
+    //   <button class="nav-button" onclick="logout()">Logout</button>
+    // `;
     navButtons.innerHTML = `
-      <span>Welcome, ${currentUser.name}</span>
-      <button class="nav-button" onclick="logout()">Logout</button>
-    `;
+  <div style="
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+    background: linear-gradient(90deg, #6366f1, #3b82f6); 
+    padding: 0.5rem 1rem; 
+    border-radius: 10px; 
+    color: white; 
+    font-weight: 500; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  ">
+    <span style="font-size: 0.95rem;">
+      👋 Welcome, <strong>${currentUser.isAdmin ? 'Admin' : 'Customer'}</strong> - ${currentUser.name}
+    </span>
+    <button class="nav-button" onclick="logout()" style="
+      background-color: white; 
+      color: #3b82f6; 
+      border: none; 
+      padding: 6px 12px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: bold;
+      transition: background 0.3s ease;
+    " onmouseover="this.style.background='#e0e7ff'" onmouseout="this.style.background='white'">
+      Logout
+    </button>
+  </div>
+`;
+
 
     adminTab.classList.toggle('hidden', !currentUser.isAdmin);
     // Hide all user-only elements if the user is an admin
@@ -440,7 +490,12 @@ function closeTicketModal() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  const savedUser = localStorage.getItem('currentUser');
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+  }
+
   updateNavigation();
   displayTodayFlights();
-  displaySearchResults(flights); // Show all flights initially
+  displaySearchResults(flights);
 });
