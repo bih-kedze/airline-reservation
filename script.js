@@ -264,11 +264,22 @@ function createFlightCard(flight) {
         <div>${flight.duration}</div>
       </div>
       <div class="flight-info">
-        <div class="flight-price">${flight.price} FCFA</div>
-        ${currentUser ? `<button class="select-button customer-only hidden" onclick="bookFlight(${flight.id})">Book Now</button>` 
-                     : `<button class="select-button" onclick="showAuthModal('login')">Login to Book</button>`}
-      </div>
-    </div>
+  <div class="flight-price">${flight.price} FCFA</div>
+  ${(() => {
+    if (currentUser && !currentUser.isAdmin) {
+      console.log('currentUser', currentUser);
+      
+      return `<button class="select-button customer-only" onclick="bookFlight(${flight.id})">Book Now</button>`;
+    }
+    else if (currentUser && currentUser.isAdmin) {
+      return `<button class="select-button customer-only hidden" onclick="bookFlight(${flight.id})">Book Now</button>`;
+    }
+    
+    else {
+      return `<button class="select-button" onclick="showAuthModal('login')">Login to Book</button>`;
+    }
+  })()}
+</div>
   `;
   return div;
 }
@@ -333,7 +344,8 @@ function displayBookings() {
         </div>
         <div class="flight-info">
           <div class="flight-price">${flight.price * booking.passengers}FCFA</div>
-          <button class="select-button" onclick="showTicket(${JSON.stringify(booking)}, ${JSON.stringify(flight)})">View Ticket</button>
+          <button class="select-button" onclick="showTicketById(${booking.id})">View Ticket</button>
+          <button class="select-button cancel-button" onclick="cancelBooking(${booking.id})">Cancel</button>
         </div>
       </div>
     `;
@@ -390,6 +402,37 @@ function showTicket(booking, flight) {
   
   modal.style.display = 'block';
 }
+
+function showTicketById(bookingId) {
+  const booking = bookings.find(b => b.id === bookingId);
+  if (!booking) {
+    alert('Booking not found!');
+    return;
+  }
+
+  const flight = flights.find(f => f.id === booking.flightId);
+  console.log('flight', flight);
+  if (!flight) {
+    alert('Flight not found!');
+    return;
+  }
+
+  showTicket(booking, flight);
+}
+
+
+function cancelBooking(bookingId) {
+  const index = bookings.findIndex(b => b.id === bookingId);
+  if (index !== -1) {
+    if (confirm("Are you sure you want to cancel this booking?")) {
+      bookings.splice(index, 1);
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+      displayBookings(); // Refresh the booking list
+      alert("Booking canceled.");
+    }
+  }
+}
+
 
 function closeTicketModal() {
   document.getElementById('ticketModal').style.display = 'none';
